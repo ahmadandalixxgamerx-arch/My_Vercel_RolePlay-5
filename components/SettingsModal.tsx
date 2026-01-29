@@ -610,7 +610,47 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, s
                              </div>
                         </div>
                     </section>
-                    
+
+                    <div className="h-px bg-zinc-900"></div>
+
+                    <section>
+                        <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-6 flex items-center gap-2">
+                            <Sliders size={14} /> Character Editor
+                        </h4>
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-[10px] font-bold text-zinc-600 uppercase mb-2">Editor Mode</label>
+                                <div className="grid grid-cols-2 gap-2">
+                                    <button
+                                        onClick={() => handleChange('characterEditorMode', 'simple')}
+                                        className={`py-3 px-4 text-xs uppercase font-bold border transition-all ${
+                                            localSettings.characterEditorMode === 'simple'
+                                            ? 'bg-orange-500/10 border-orange-500 text-orange-500 shadow-[0_0_10px_rgba(234,88,12,0.2)]'
+                                            : 'bg-black border-zinc-800 text-zinc-500 hover:border-zinc-600'
+                                        }`}
+                                    >
+                                        Simple Mode
+                                    </button>
+                                    <button
+                                        onClick={() => handleChange('characterEditorMode', 'advanced')}
+                                        className={`py-3 px-4 text-xs uppercase font-bold border transition-all ${
+                                            localSettings.characterEditorMode === 'advanced'
+                                            ? 'bg-orange-500/10 border-orange-500 text-orange-500 shadow-[0_0_10px_rgba(234,88,12,0.2)]'
+                                            : 'bg-black border-zinc-800 text-zinc-500 hover:border-zinc-600'
+                                        }`}
+                                    >
+                                        Advanced Mode
+                                    </button>
+                                </div>
+                                <p className="text-[9px] text-zinc-600 mt-2">
+                                    {localSettings.characterEditorMode === 'simple'
+                                        ? 'Simple mode shows only basic fields: Name, Description, First Message, Avatar, and Scenario.'
+                                        : 'Advanced mode shows all available fields for detailed character customization.'}
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
                     <div className="h-px bg-zinc-900"></div>
 
                     <section>

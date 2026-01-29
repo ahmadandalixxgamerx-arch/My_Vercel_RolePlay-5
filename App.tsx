@@ -907,30 +907,64 @@ function App() {
       const char = characters.find(c => c.id === id);
       if (!char) return;
 
+      // Build export data based on character editor mode
+      const isSimpleMode = settings.characterEditorMode === 'simple';
+
       const exportData = {
           spec: 'chara_card_v2',
           spec_version: '2.0',
-          data: {
-              name: char.name,
-              description: char.description,
-              personality: char.personality,
-              scenario: char.scenario,
-              first_mes: char.firstMessage,
-              mes_example: char.chatExamples,
-              system_prompt: char.jailbreak,
-              creator_notes: char.tagline,
-              tagline: char.tagline,
-              appearance: char.appearance,
-              tags: [],
-              avatar: char.avatarUrl,
-              character_book: {
-                  entries: char.lorebooks.flatMap(lb => lb.entries)
-              },
-              lorebooks: char.lorebooks,
-              extensions: {
-                  velvet_core: { ...char }
+          data: isSimpleMode
+              ? {
+                  // Simple mode: Only basic fields
+                  name: char.name,
+                  description: char.description,
+                  first_mes: char.firstMessage,
+                  avatar: char.avatarUrl,
+                  scenario: char.scenario || '',
+                  // Include empty fields for compatibility
+                  personality: '',
+                  mes_example: '',
+                  system_prompt: '',
+                  creator_notes: '',
+                  tagline: '',
+                  appearance: '',
+                  tags: [],
+                  character_book: {
+                      entries: char.lorebooks.flatMap(lb => lb.entries)
+                  },
+                  lorebooks: char.lorebooks,
+                  extensions: {
+                      velvet_core: {
+                          ...char,
+                          editorMode: 'simple'
+                      }
+                  }
               }
-          },
+              : {
+                  // Advanced mode: All fields
+                  name: char.name,
+                  description: char.description,
+                  personality: char.personality,
+                  scenario: char.scenario,
+                  first_mes: char.firstMessage,
+                  mes_example: char.chatExamples,
+                  system_prompt: char.jailbreak,
+                  creator_notes: char.tagline,
+                  tagline: char.tagline,
+                  appearance: char.appearance,
+                  tags: [],
+                  avatar: char.avatarUrl,
+                  character_book: {
+                      entries: char.lorebooks.flatMap(lb => lb.entries)
+                  },
+                  lorebooks: char.lorebooks,
+                  extensions: {
+                      velvet_core: {
+                          ...char,
+                          editorMode: 'advanced'
+                      }
+                  }
+              },
           ...char
       };
 

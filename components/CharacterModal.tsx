@@ -821,16 +821,26 @@ INSTRUCTION: Output ONLY the raw content for this field. Do not include explanat
     e.target.value = '';
   };
 
-  const tabs: {id: Tab, label: string, icon: any}[] = [
-      { id: 'generator', label: 'Conjure', icon: Wand2 },
-      { id: 'identity', label: 'Identity', icon: UserCircle2 },
-      { id: 'appearance', label: 'Visage', icon: Eye },
-      { id: 'mind', label: 'Psyche', icon: BrainCircuit },
-      { id: 'system', label: 'Core', icon: Terminal },
-      { id: 'style', label: 'Style', icon: PenTool }, 
-      { id: 'world', label: 'World', icon: Globe },
-      ...(character ? [{ id: 'memory' as Tab, label: 'Record', icon: BookOpen }] : [])
-  ];
+  // Tabs configuration based on editor mode
+  const isSimpleMode = settings.characterEditorMode === 'simple';
+
+  const tabs: {id: Tab, label: string, icon: any}[] = isSimpleMode
+    ? [
+        { id: 'generator', label: 'Conjure', icon: Wand2 },
+        { id: 'identity', label: 'Identity', icon: UserCircle2 },
+        { id: 'world', label: 'World', icon: Globe },
+        ...(character ? [{ id: 'memory' as Tab, label: 'Record', icon: BookOpen }] : [])
+      ]
+    : [
+        { id: 'generator', label: 'Conjure', icon: Wand2 },
+        { id: 'identity', label: 'Identity', icon: UserCircle2 },
+        { id: 'appearance', label: 'Visage', icon: Eye },
+        { id: 'mind', label: 'Psyche', icon: BrainCircuit },
+        { id: 'system', label: 'Core', icon: Terminal },
+        { id: 'style', label: 'Style', icon: PenTool },
+        { id: 'world', label: 'World', icon: Globe },
+        ...(character ? [{ id: 'memory' as Tab, label: 'Record', icon: BookOpen }] : [])
+      ];
 
   const renderFieldControls = (field: keyof Character, type: 'input' | 'textarea') => {
     const isInput = type === 'input';
@@ -1192,7 +1202,7 @@ INSTRUCTION: Output ONLY the raw content for this field. Do not include explanat
 
              {/* ... (rest of the file remains unchanged) ... */}
              {activeTab === 'identity' && !editingLorebook && (
-                <div className="space-y-6 animate-slide-up-fade">
+                <div className={`animate-slide-up-fade ${isSimpleMode ? 'space-y-6 h-full flex flex-col' : 'space-y-6'}`}>
                      <div className="flex justify-center mb-8">
                         <div className="relative group cursor-pointer" onClick={() => avatarInputRef.current?.click()}>
                              <div className="absolute inset-0 bg-orange-500/10 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -1214,7 +1224,7 @@ INSTRUCTION: Output ONLY the raw content for this field. Do not include explanat
                     <div>
                         <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Name</label>
                         <div className="relative">
-                            <input 
+                            <input
                             required
                             className="w-full bg-black border border-zinc-800 p-4 text-zinc-200 focus:border-orange-500/50 outline-none transition-all duration-300 font-serif tracking-wide shadow-inner select-text cursor-text"
                             placeholder="e.g. Countess Isabella"
@@ -1224,18 +1234,62 @@ INSTRUCTION: Output ONLY the raw content for this field. Do not include explanat
                             {renderFieldControls('name', 'input')}
                         </div>
                     </div>
-                    <div>
-                        <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Tagline</label>
-                        <div className="relative">
-                            <input 
-                            className="w-full bg-black border border-zinc-800 p-4 text-zinc-200 focus:border-orange-500/50 outline-none transition-all duration-300 shadow-inner select-text cursor-text"
-                            placeholder="A brief designation..."
-                            value={formData.tagline}
-                            onChange={e => setFormData({...formData, tagline: e.target.value})}
-                            />
-                            {renderFieldControls('tagline', 'input')}
+
+                    {isSimpleMode ? (
+                        <>
+                            <div className="flex-1 flex flex-col">
+                                <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Description</label>
+                                <div className="relative flex-1">
+                                    <textarea
+                                    className="w-full h-full bg-black border border-zinc-800 p-4 text-zinc-300 focus:border-orange-500/50 outline-none resize-none font-light leading-relaxed transition-colors duration-300 shadow-inner scrollbar-thin scrollbar-thumb-zinc-800 select-text cursor-text pb-10"
+                                    value={formData.description}
+                                    onChange={e => setFormData({...formData, description: e.target.value})}
+                                    placeholder="Full character description including appearance, personality, background, etc."
+                                    />
+                                    {renderFieldControls('description', 'textarea')}
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">First Message</label>
+                                <div className="relative">
+                                    <textarea
+                                    className="w-full bg-black border border-zinc-800 p-4 text-zinc-300 focus:border-orange-500/50 outline-none resize-none font-light leading-relaxed transition-colors duration-300 shadow-inner scrollbar-thin scrollbar-thumb-zinc-800 select-text cursor-text h-32 pb-10"
+                                    value={formData.firstMessage}
+                                    onChange={e => setFormData({...formData, firstMessage: e.target.value})}
+                                    placeholder="The opening message..."
+                                    />
+                                    {renderFieldControls('firstMessage', 'textarea')}
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Scenario (Optional)</label>
+                                <div className="relative">
+                                    <textarea
+                                    className="w-full bg-black border border-zinc-800 p-4 text-zinc-300 focus:border-orange-500/50 outline-none resize-none font-light leading-relaxed transition-colors duration-300 shadow-inner scrollbar-thin scrollbar-thumb-zinc-800 select-text cursor-text h-24 pb-10"
+                                    value={formData.scenario}
+                                    onChange={e => setFormData({...formData, scenario: e.target.value})}
+                                    placeholder="Current situation or setting..."
+                                    />
+                                    {renderFieldControls('scenario', 'textarea')}
+                                </div>
+                            </div>
+                        </>
+                    ) : (
+                        <div>
+                            <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Tagline</label>
+                            <div className="relative">
+                                <input
+                                className="w-full bg-black border border-zinc-800 p-4 text-zinc-200 focus:border-orange-500/50 outline-none transition-all duration-300 shadow-inner select-text cursor-text"
+                                placeholder="A brief designation..."
+                                value={formData.tagline}
+                                onChange={e => setFormData({...formData, tagline: e.target.value})}
+                                />
+                                {renderFieldControls('tagline', 'input')}
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
             )}
 

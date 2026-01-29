@@ -40,6 +40,9 @@ export const INITIAL_SETTINGS: AppSettings = {
   // Puter defaults
   puterModelInput: 'gpt-4o',
 
+  // Character Editor Mode
+  characterEditorMode: 'advanced', // Default to advanced mode
+
   globalLorebooks: [],
   savedPresets: []
 };

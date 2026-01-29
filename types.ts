@@ -97,6 +97,9 @@ export interface AppSettings {
   // Puter-specific
   puterModelInput: string; // Manual model ID input for Puter
 
+  // Character Editor Mode
+  characterEditorMode: 'simple' | 'advanced'; // Simple or Advanced character editor
+
   globalLorebooks: Lorebook[];
   savedPresets: SettingsPreset[];
 }
